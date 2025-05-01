@@ -27,10 +27,18 @@ public class TasksController : ControllerBase
     [HttpPost]
     public IActionResult Create(TaskItem task)
     {
-        taskService.AddTask(task.Title, task.Description, task.DueDate, task.Priority);
-        return CreatedAtAction(nameof(GetAll), new { id = task.Id }, task);
+        try
+        {
+            taskService.AddTask(task.Title, task.Description, task.DueDate, task.Priority);
+            return Ok(task);
+        }
+        catch (Exception ex)
+        {
+           Console.WriteLine("ERROR in Create: " + ex.Message);
+           return StatusCode(500, "Server error: " + ex.Message);
+        }
     }
-
+    
     [HttpPut("{id}")]
     public IActionResult Update(int id, TaskItem updated)
     {
